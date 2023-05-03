@@ -20,6 +20,20 @@ out vec4 FragColor;
 void main() {
     vec3 model_color = mat_color * texture(mat_texture, model_uv).rgb;
     
-    // Color
-    FragColor = vec4(model_color, 1.0);
+    // The whole light equation = (Ia * model_color) + (Ip * model_color * dot product(R, v)^n (shininess))
+    // + (Ip * model_color * dot product(N, L)
+
+    // Also that whole thing needs to be capped at 1.0, so can do a minimum between (1, 1, 1, 1) and the equation
+
+    vec3 ambient_illum = model_color * ambient;
+    
+    // Full equation, 1.0 vs the calculated light, capped at 1.0
+    FragColor = min(vec4(1.0, 1.0, 1.0, 1.0),
+        // ambient illumination
+        vec4(ambient_illum, 1.0)  
+        // specular illumination
+        + vec4(specular_illum * mat_specular, 1.0)
+        // diffuse illumination
+        + vec4(diffuse_illum *  model_color, 1.0)
+        );
 }
