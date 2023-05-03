@@ -24,5 +24,9 @@ out vec4 FragColor;
 
 void main() {
     // Color
+    vec3 N = normalize(model_normal);
+
+
+
     FragColor = vec4(mat_color * texture(mat_texture, model_uv).rgb, 1.0);
 }

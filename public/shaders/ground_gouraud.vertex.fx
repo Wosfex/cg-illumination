@@ -55,7 +55,9 @@ void main() {
     // 1.
     // vec3 first_neighbor = position;
     // make a copy of uv, and modify it a little bit
-    vec2 first_neighbor_uv = vec2(uv[0] +0.001, uv[1]);
+    vec2 first_neighbor_uv = uv;
+    first_neighbor_uv.x += 0.001;
+
     // float first_modifier = 2.0 * height_scalar * ((texture(heightmap, first_neighbor_uv).r) - 0.5);
     float test2 = 2.0 * height_scalar * (texture(heightmap, first_neighbor_uv).r - 0.5);
 
@@ -71,7 +73,9 @@ void main() {
     // do it again, but with y instead of x
     // vec3 second_neighbor = position;
     // move the y a little bit
-    vec2 second_neighbor_uv = vec2(uv[0], uv[1] + 0.001);
+    vec2 second_neighbor_uv = uv;
+    second_neighbor_uv.y += 0.001;
+
     // float second_modifier = 2.0 * height_scalar * ((texture(heightmap, second_neighbor_uv).r) - 0.5);
     float test4 = 2.0 * height_scalar * (texture(heightmap, second_neighbor_uv).r - 0.5);
 

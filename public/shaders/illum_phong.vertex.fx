@@ -19,6 +19,8 @@ out vec3 model_normal;
 out vec2 model_uv;
 
 void main() {
+    // THIS DOES NOT NEED TO CHANGE
+
     // Pass vertex normal onto the fragment shader
     model_normal = normal;
     // Pass vertex texcoord onto the fragment shader
