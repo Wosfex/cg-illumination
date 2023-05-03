@@ -24,11 +24,13 @@ out vec4 FragColor;
 
 void main() {
     // YOOOOOOO WE GOT IT
-    vec3 N = normalize(model_normal);
     vec4 diffuse_total = vec4(0.0, 0.0, 0.0, 0.0);
     vec4 specular_total = diffuse_total;
     vec4 ambient_light = vec4(ambient * mat_color * texture(mat_texture, model_uv).rgb, 1.0);
 
+    // For the per-light shading, I would just do this within a for loop, depending on num_lights
+    // and then instead of 0 I would insert i. I'll do that later.
+    vec3 N = normalize(model_normal);
     vec3 L = normalize(light_positions[0]);
     vec3 R = normalize(2.0 * dot(N, L) * N - L);
     vec3 V = normalize(camera_position);

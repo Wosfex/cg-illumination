@@ -22,6 +22,8 @@ out vec3 model_normal;
 out vec2 model_uv;
 
 void main() {
+    // This one should be similar to ground_gouraud.vertex
+
     // Get initial position of vertex (prior to height displacement)
     vec4 world_pos = world * vec4(position, 1.0);
 

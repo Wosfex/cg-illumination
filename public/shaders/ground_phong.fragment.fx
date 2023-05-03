@@ -23,6 +23,6 @@ uniform vec3 light_colors[8]; // Ip
 out vec4 FragColor;
 
 void main() {
-    // Color
+    // This should be similar to the illum_phong.fragment one
     FragColor = vec4(mat_color * texture(mat_texture, model_uv).rgb, 1.0);
 }
