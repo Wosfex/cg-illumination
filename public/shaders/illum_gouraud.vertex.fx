@@ -27,13 +27,26 @@ out vec3 diffuse_illum;
 out vec3 specular_illum;
 
 void main() {
+    // not needed anymore
     // Pass diffuse and specular illumination onto the fragment shader
-    diffuse_illum = vec3(0.0, 0.0, 0.0);
-    specular_illum = vec3(0.0, 0.0, 0.0);
+    // diffuse_illum = vec3(0.0, 0.0, 0.0);
+    // specular_illum = vec3(0.0, 0.0, 0.0);
+
+    // No need to worry about heightmap here, just the sphere
+
+    // Vector calculations
+    vec3 N = normalize(normal);                     // surface normal for sphere
+    vec3 L = normalize(light_positions[0]);         // light normal
+    vec3 R = normalize(2.0 * dot(N, L) * N - L);    // reflection normal
+    vec3 V = normalize(camera_position);            // normalized camera pos
 
     // Pass vertex texcoord onto the fragment shader
     model_uv = uv;
 
+    // Light calculations
+    diffuse_illum = vec3(light_colors[0]  * max(dot(N, L), 0.0));
+    specular_illum = vec3(light_colors[0]  * pow(max(dot(R, V), 0.0), mat_shininess));
+    
     // Transform and project vertex from 3D world-space to 2D screen-space
     gl_Position = projection * view * world * vec4(position, 1.0);
 }
