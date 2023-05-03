@@ -31,9 +31,9 @@ void main() {
     FragColor = min(vec4(1.0, 1.0, 1.0, 1.0),
         // ambient illumination
         vec4(ambient_illum, 1.0)  
-        // specular illumination
-        + vec4(specular_illum * mat_specular, 1.0)
         // diffuse illumination
         + vec4(diffuse_illum *  model_color, 1.0)
+        // specular illumination
+        + vec4(specular_illum * mat_specular, 1.0)
         );
 }
