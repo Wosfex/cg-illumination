@@ -94,6 +94,78 @@ class Renderer {
         sphere.material = materials['illum_' + this.shading_alg];
         current_scene.models.push(sphere);
 
+        let cloud1 = CreateSphere('sphere', {segments: 20}, scene);
+        cloud1.position = new Vector3(1.0, 4.5, 3.0);
+        cloud1.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 5,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        cloud1.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(cloud1);
+        
+        let cloud2 = CreateSphere('sphere', {segments: 20}, scene);
+        cloud2.position = new Vector3(0.5, 4.5, 3.0);
+        cloud2.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 5,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        cloud2.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(cloud2);
+
+        let cloud3 = CreateSphere('sphere', {segments: 20}, scene);
+        cloud3.position = new Vector3(0.3, 4.5, 2.5);
+        cloud3.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 5,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        cloud3.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(cloud3);
+
+        let cloud4 = CreateSphere('sphere', {segments: 20}, scene);
+        cloud4.position = new Vector3(0.7, 4.8, 2.5);
+        cloud4.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 5,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        cloud4.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(cloud4);
+
+        let cloud5 = CreateSphere('sphere', {segments: 20}, scene);
+        cloud5.position = new Vector3(1.0, 4.5, 3.5);
+        cloud5.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 5,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        cloud5.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(cloud5);
+
+        let cloud6 = CreateSphere('sphere', {segments: 20}, scene);
+        cloud6.position = new Vector3(0.8, 4.5, 2.0);
+        cloud6.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 5,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        cloud6.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(cloud6);
+        
 
         // Animation function - called before each frame gets rendered
         scene.onBeforeRenderObservable.add(() => {
