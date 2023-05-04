@@ -4,6 +4,7 @@ precision mediump float;
 // Input
 in vec3 model_normal;
 in vec2 model_uv;
+in vec3 model_xyz;
 
 // Uniforms
 // material
@@ -39,7 +40,7 @@ void main() {
     // Attempt at for loop
     // WE GOT IT
     for(int i=0; i<num_lights; i++){
-        vec3 L = normalize(light_positions[i]);
+        vec3 L = normalize(light_positions[i] - model_xyz);
         vec3 R = normalize(2.0 * dot(N, L) * N - L);
         vec3 V = normalize(camera_position);
 

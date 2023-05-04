@@ -20,6 +20,7 @@ uniform vec2 texture_scale;
 // Output
 out vec3 model_normal;
 out vec2 model_uv;
+out vec3 model_xyz;
 
 void main() {
     // This one should be similar to ground_gouraud.vertex
@@ -59,6 +60,7 @@ void main() {
     // Pass vertex texcoord onto the fragment shader
     model_normal = N;
     model_uv = uv;
+    model_xyz = vec3(world_pos);
 
     // Transform and project vertex from 3D world-space to 2D screen-space
     gl_Position = projection * view * world_pos;
