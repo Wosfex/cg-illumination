@@ -56,6 +56,17 @@ class Renderer {
                 ambient: new Color3(0.2, 0.2, 0.2),
                 lights: [],
                 models: []
+            },
+            {
+                scene: new Scene(this.engine),
+                background_color: new Color4(0.1, 0.1, 0.1, 1.0),
+                materials: null,
+                ground_subdivisions: [50, 50],
+                ground_mesh: null,
+                camera: null,
+                ambient: new Color3(0.2, 0.2, 0.2),
+                lights: [],
+                models: []
             }
 
         ];
@@ -260,11 +271,312 @@ class Renderer {
         cloud6.material = materials['illum_' + this.shading_alg];
         current_scene.models.push(cloud6);
         
+        // Added code, starter taken from a guide on babylon.js key list
+        scene.onKeyboardObservable.add((kbInfo) => {
+            switch (kbInfo.event.key) {
+                // translate negative x
+                case 'a':
+                    // this.active_light gives the index of the .lights
+                    current_scene.lights[this.active_light].position = new Vector3(
+                        current_scene.lights[this.active_light].position.x - 1, current_scene.lights[this.active_light].position.y, current_scene.lights[this.active_light].position.z
+                        );
+                    break;
+
+                // translate positive x
+                case 'd':
+                    current_scene.lights[this.active_light].position = new Vector3(
+                        current_scene.lights[this.active_light].position.x+1, current_scene.lights[this.active_light].position.y, current_scene.lights[this.active_light].position.z
+                        );
+                    break;
+
+                //translate negative y
+                case 'f':
+                    current_scene.lights[this.active_light].position = new Vector3(
+                        current_scene.lights[this.active_light].position.x, current_scene.lights[this.active_light].position.y-1, current_scene.lights[this.active_light].position.z
+                        );
+                    break;
+
+                // translate positive y
+                case 'r':
+                    current_scene.lights[this.active_light].position = new Vector3(
+                        current_scene.lights[this.active_light].position.x, current_scene.lights[this.active_light].position.y+1, current_scene.lights[this.active_light].position.z
+                        );
+                    break;
+
+                //translate negative z
+                case 'w':
+                    current_scene.lights[this.active_light].position = new Vector3(
+                        current_scene.lights[this.active_light].position.x, current_scene.lights[this.active_light].position.y, current_scene.lights[this.active_light].position.z-1
+                        );
+                    break;
+
+                // translate positive z
+                case 's':
+                    current_scene.lights[this.active_light].position = new Vector3(
+                        current_scene.lights[this.active_light].position.x, current_scene.lights[this.active_light].position.y, current_scene.lights[this.active_light].position.z+1
+                        );
+                    break;
+            }
+          });
+
+        // Animation function - called before each frame gets rendered
+        scene.onBeforeRenderObservable.add(() => {
+            // update models and lights here (if needed)
+            // This would be light changing stuff here
+            // this.active_light = 0;
+            // current_scene.lights.push(light0);
+            // ...
+            
+
+            // update uniforms in shader programs
+            this.updateShaderUniforms(scene_idx, materials['illum_' + this.shading_alg]);
+            this.updateShaderUniforms(scene_idx, materials['ground_' + this.shading_alg]);
+        });
+    }
+    createScene1(scene_idx) {
+        let current_scene = this.scenes[scene_idx];
+        let scene = current_scene.scene;
+        let materials = current_scene.materials;
+        let ground_mesh = current_scene.ground_mesh;
+
+        // Set scene-wide / environment values
+        scene.clearColor = current_scene.background_color;
+        scene.ambientColor = current_scene.ambient;
+        scene.useRightHandedSystem = true;
+
+        // Create camera
+        current_scene.camera = new UniversalCamera('camera', new Vector3(0.0, 1.8, 10.0), scene);
+        current_scene.camera.setTarget(new Vector3(0.0, 1.8, 0.0));
+        current_scene.camera.upVector = new Vector3(0.0, 1.0, 0.0);
+        current_scene.camera.attachControl(this.canvas, true);
+        current_scene.camera.fov = 35.0 * (Math.PI / 180);
+        current_scene.camera.minZ = 0.1;
+        current_scene.camera.maxZ = 100.0;
+
+        // Create point light sources
+        let light0 = new PointLight('light0', new Vector3(1.0, 1.0, 5.0), scene);
+        light0.diffuse = new Color3(1.0, 1.0, 1.0);
+        light0.specular = new Color3(1.0, 1.0, 1.0);
+        current_scene.lights.push(light0);
+
+        let light1 = new PointLight('light1', new Vector3(0.0, 3.0, 0.0), scene);
+        light1.diffuse = new Color3(1.0, 1.0, 1.0);
+        light1.specular = new Color3(1.0, 1.0, 1.0);
+        current_scene.lights.push(light1);
+
+        // Create ground mesh
+        let white_texture = RawTexture.CreateRGBTexture(new Uint8Array([255, 255, 255]), 1, 1, scene);
+        let ground_heightmap = new Texture('/heightmaps/default.png', scene);
+        ground_mesh.scaling = new Vector3(20.0, 1.0, 20.0);
+        ground_mesh.metadata = {
+            mat_color: new Color3(0.10, 0.65, 0.15),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.0, 0.0, 0.0),
+            mat_shininess: 1,
+            texture_scale: new Vector2(1.0, 1.0),
+            height_scalar: 1.0,
+            heightmap: ground_heightmap
+        }
+        ground_mesh.material = materials['ground_' + this.shading_alg];
+
+        // Create other models
+        let sphere = CreateSphere('sphere', {segments: 32}, scene);
+        sphere.position = new Vector3(1.0, 0.5, 3.0);
+        sphere.metadata = {
+            mat_color: new Color3(0.10, 0.35, 0.88),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 16,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        sphere.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(sphere);
+        
 
         // Animation function - called before each frame gets rendered
         scene.onBeforeRenderObservable.add(() => {
             // update models and lights here (if needed)
             // ...
+
+            // update uniforms in shader programs
+            this.updateShaderUniforms(scene_idx, materials['illum_' + this.shading_alg]);
+            this.updateShaderUniforms(scene_idx, materials['ground_' + this.shading_alg]);
+        });
+    }
+
+    createScene1(scene_idx) {
+        let current_scene = this.scenes[scene_idx];
+        let scene = current_scene.scene;
+        let materials = current_scene.materials;
+        let ground_mesh = current_scene.ground_mesh;
+
+        // Set scene-wide / environment values
+        scene.clearColor = current_scene.background_color;
+        scene.ambientColor = current_scene.ambient;
+        scene.useRightHandedSystem = true;
+
+        // Create camera
+        current_scene.camera = new UniversalCamera('camera', new Vector3(0.0, 1.8, 10.0), scene);
+        current_scene.camera.setTarget(new Vector3(0.0, 1.8, 0.0));
+        current_scene.camera.upVector = new Vector3(0.0, 1.0, 0.0);
+        current_scene.camera.attachControl(this.canvas, true);
+        current_scene.camera.fov = 35.0 * (Math.PI / 180);
+        current_scene.camera.minZ = 0.1;
+        current_scene.camera.maxZ = 100.0;
+
+        // Create point light sources
+        let light0 = new PointLight('light0', new Vector3(1.0, 1.0, 5.0), scene);
+        light0.diffuse = new Color3(1.0, 1.0, 1.0);
+        light0.specular = new Color3(1.0, 1.0, 1.0);
+        current_scene.lights.push(light0);
+
+        let light1 = new PointLight('light1', new Vector3(0.0, 3.0, 0.0), scene);
+        light1.diffuse = new Color3(1.0, 1.0, 1.0);
+        light1.specular = new Color3(1.0, 1.0, 1.0);
+        current_scene.lights.push(light1);
+
+        // Create ground mesh
+        let white_texture = RawTexture.CreateRGBTexture(new Uint8Array([255, 255, 255]), 1, 1, scene);
+        let ground_heightmap = new Texture('/heightmaps/default.png', scene);
+        ground_mesh.scaling = new Vector3(20.0, 1.0, 20.0);
+        ground_mesh.metadata = {
+            mat_color: new Color3(0.10, 0.65, 0.15),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.0, 0.0, 0.0),
+            mat_shininess: 1,
+            texture_scale: new Vector2(1.0, 1.0),
+            height_scalar: 1.0,
+            heightmap: ground_heightmap
+        }
+        ground_mesh.material = materials['ground_' + this.shading_alg];
+
+        // Create other models
+        let cloud1 = CreateSphere('sphere', {segments: 20}, scene);
+        cloud1.position = new Vector3(1.0, 4.5, 3.0);
+        cloud1.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 5,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        cloud1.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(cloud1);
+    
+        let cloud2 = CreateSphere('sphere', {segments: 20}, scene);
+        cloud2.position = new Vector3(0.5, 4.5, 3.0);
+        cloud2.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 5,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        cloud2.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(cloud2);
+
+        let cloud3 = CreateSphere('sphere', {segments: 20}, scene);
+        cloud3.position = new Vector3(0.3, 4.5, 2.5);
+        cloud3.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 5,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        cloud3.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(cloud3);
+
+        let cloud4 = CreateSphere('sphere', {segments: 20}, scene);
+        cloud4.position = new Vector3(0.7, 4.8, 2.5);
+        cloud4.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 5,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        cloud4.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(cloud4);
+
+        let cloud5 = CreateSphere('sphere', {segments: 20}, scene);
+        cloud5.position = new Vector3(1.0, 4.5, 3.5);
+        cloud5.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 5,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        cloud5.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(cloud5);
+
+        let cloud6 = CreateSphere('sphere', {segments: 20}, scene);
+        cloud6.position = new Vector3(0.8, 4.5, 2.0);
+        cloud6.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.8, 0.8, 0.8),
+            mat_shininess: 5,
+            texture_scale: new Vector2(1.0, 1.0)
+        }
+        cloud6.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(cloud6);
+        
+        // Added code, starter taken from a guide on babylon.js key list
+        scene.onKeyboardObservable.add((kbInfo) => {
+            switch (kbInfo.event.key) {
+                // translate negative x
+                case 'a':
+                    // this.active_light gives the index of the .lights
+                    current_scene.lights[this.active_light].position = new Vector3(
+                        current_scene.lights[this.active_light].position.x - 1, current_scene.lights[this.active_light].position.y, current_scene.lights[this.active_light].position.z
+                        );
+                    break;
+
+                // translate positive x
+                case 'd':
+                    current_scene.lights[this.active_light].position = new Vector3(
+                        current_scene.lights[this.active_light].position.x+1, current_scene.lights[this.active_light].position.y, current_scene.lights[this.active_light].position.z
+                        );
+                    break;
+
+                //translate negative y
+                case 'f':
+                    current_scene.lights[this.active_light].position = new Vector3(
+                        current_scene.lights[this.active_light].position.x, current_scene.lights[this.active_light].position.y-1, current_scene.lights[this.active_light].position.z
+                        );
+                    break;
+
+                // translate positive y
+                case 'r':
+                    current_scene.lights[this.active_light].position = new Vector3(
+                        current_scene.lights[this.active_light].position.x, current_scene.lights[this.active_light].position.y+1, current_scene.lights[this.active_light].position.z
+                        );
+                    break;
+
+                //translate negative z
+                case 'w':
+                    current_scene.lights[this.active_light].position = new Vector3(
+                        current_scene.lights[this.active_light].position.x, current_scene.lights[this.active_light].position.y, current_scene.lights[this.active_light].position.z-1
+                        );
+                    break;
+
+                // translate positive z
+                case 's':
+                    current_scene.lights[this.active_light].position = new Vector3(
+                        current_scene.lights[this.active_light].position.x, current_scene.lights[this.active_light].position.y, current_scene.lights[this.active_light].position.z+1
+                        );
+                    break;
+            }
+          });
+
+        // Animation function - called before each frame gets rendered
+        scene.onBeforeRenderObservable.add(() => {
+            // update models and lights here (if needed)
+
+            // ...
+            
 
             // update uniforms in shader programs
             this.updateShaderUniforms(scene_idx, materials['illum_' + this.shading_alg]);
@@ -425,6 +737,8 @@ class Renderer {
             this.updateShaderUniforms(scene_idx, materials['ground_' + this.shading_alg]);
         });
     }
+
+    
 
     updateShaderUniforms(scene_idx, shader) {
         let current_scene = this.scenes[scene_idx];
