@@ -33,11 +33,6 @@ void main() {
     // Get initial position of vertex (prior to height displacement)
     vec4 world_pos = world * vec4(position, 1.0);
 
-    // Not needed anymore
-    // Pass diffuse and specular illumination onto the fragment shader
-    // diffuse_illum = vec3(0.0, 0.0, 0.0);
-    // specular_illum = vec3(0.0, 0.0, 0.0);
-
     /* Steps:
         0.5. Modify the position (y) by the heightmap and the scalar
         1. Find nearby uvs, and modify it based on the ground and height
