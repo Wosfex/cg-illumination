@@ -98,6 +98,9 @@ class Renderer {
         // Animation function - called before each frame gets rendered
         scene.onBeforeRenderObservable.add(() => {
             // update models and lights here (if needed)
+            // This would be light changing stuff here
+            // this.active_light = 0;
+            // current_scene.lights.push(light0);
             // ...
 
             // update uniforms in shader programs
