@@ -27,6 +27,8 @@ out vec3 diffuse_illum;
 out vec3 specular_illum;
 
 void main() {
+    vec4 world_pos = world * vec4(position, 1.0);
+    vec3 model_xyz = vec3(world_pos);
     // not needed anymore
     // Pass diffuse and specular illumination onto the fragment shader
     // diffuse_illum = vec3(0.0, 0.0, 0.0);
@@ -36,7 +38,7 @@ void main() {
 
     // Vector calculations
     vec3 N = normalize(normal);                     // surface normal for sphere
-    vec3 L = normalize(light_positions[0]);         // light normal
+    vec3 L = normalize(light_positions[0] - model_xyz);         // light normal
     vec3 R = normalize(2.0 * dot(N, L) * N - L);    // reflection normal
     vec3 V = normalize(camera_position);            // normalized camera pos
 

@@ -32,6 +32,7 @@ out vec3 specular_illum;
 void main() {
     // Get initial position of vertex (prior to height displacement)
     vec4 world_pos = world * vec4(position, 1.0);
+    
 
     /* Steps:
         0.5. Modify the position (y) by the heightmap and the scalar
@@ -46,6 +47,7 @@ void main() {
     // Saving the current world y
     float original_world_y = world_pos.y;
     world_pos.y = world_pos.y + the_modifier;
+    vec3 model_xyz = vec3(world_pos);
 
     // 1.
     // vec3 first_neighbor = position;
@@ -99,7 +101,7 @@ void main() {
     vec3 bitangent = second_neighbor - world_pos.xyz;
 
     vec3 N = normalize(cross(bitangent, tangent));  // surface normal for ground
-    vec3 L = normalize(light_positions[0]);         // light normal
+    vec3 L = normalize(light_positions[0] - model_xyz);         // light normal
     
     vec3 R = normalize(2.0 * dot(N, L) * N - L);    // reflected light normal
     vec3 V = normalize(camera_position);            // normalized camera view
