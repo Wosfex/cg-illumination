@@ -369,16 +369,6 @@ class Renderer {
         customHouse.material = materials['illum_' + this.shading_alg];
         current_scene.models.push(customHouse);
 
-        // Imported VertexData, found guide online about how to calculate normals automatically
-        VertexData.ComputeNormals(rainPositions, rainIndices, rainNormals);
-        var vertexData = new VertexData();
-        vertexData.positions = rainPositions;
-        vertexData.indices = rainIndices;
-        vertexData.normals = rainNormals;
-        vertexData.applyToMesh(customRain, true);
-
-        customRain.material = materials['illum_' + this.shading_alg];
-        current_scene.models.push(customRain);
 
         
         
@@ -598,8 +588,8 @@ class Renderer {
 
         // Create point light sources
         let light0 = new PointLight('light0', new Vector3(1.0, 1.0, 5.0), scene);
-        light0.diffuse = new Color3(1.0, 1.0, 1.0);
-        light0.specular = new Color3(1.0, 1.0, 1.0);
+        light0.diffuse = new Color3(0.1, 0.5, 1.0);
+        light0.specular = new Color3(0.1, 0.5, 1.0);
         current_scene.lights.push(light0);
 
         let light1 = new PointLight('light1', new Vector3(0.0, 3.0, 0.0), scene);
@@ -607,12 +597,17 @@ class Renderer {
         light1.specular = new Color3(1.0, 1.0, 1.0);
         current_scene.lights.push(light1);
 
+        let light2 = new PointLight('light2', new Vector3(3.0, 2.0, 4), scene);
+        light1.diffuse = new Color3(1.0, 1.0, 1.0);
+        light1.specular = new Color3(1.0, 1.0, 1.0);
+        current_scene.lights.push(light2);
+
         // Create ground mesh
         let white_texture = RawTexture.CreateRGBTexture(new Uint8Array([255, 255, 255]), 1, 1, scene);
-        let ground_heightmap = new Texture('/heightmaps/default.png', scene);
+        let ground_heightmap = new Texture('/heightmaps/worldheightmap.png', scene);
         ground_mesh.scaling = new Vector3(20.0, 1.0, 20.0);
         ground_mesh.metadata = {
-            mat_color: new Color3(0.10, 0.65, 0.15),
+            mat_color: new Color3(0.10, 0.65, 0.95),
             mat_texture: white_texture,
             mat_specular: new Color3(0.0, 0.0, 0.0),
             mat_shininess: 1,
