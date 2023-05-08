@@ -483,29 +483,80 @@ class Renderer {
         ground_mesh.material = materials['ground_' + this.shading_alg];
 
         // Create other models
-        let sphere = CreateSphere('sphere', {segments: 32}, scene);
-        sphere.position = new Vector3(1.0, 0.5, 3.0);
-        sphere.metadata = {
-            mat_color: new Color3(0.10, 0.35, 0.88),
-            mat_texture: white_texture,
-            mat_specular: new Color3(0.8, 0.8, 0.8),
-            mat_shininess: 16,
-            texture_scale: new Vector2(1.0, 1.0)
-        }
-        sphere.material = materials['illum_' + this.shading_alg];
-        current_scene.models.push(sphere);
+        let pyramid = new Mesh("custom", scene);
+        let pyramidPositions = [
+            // Pyramid 1
+            0,0,0, 6,0,0, 3,3,3, // 0,1,2
+            6,0,0, 6,0,6, 3,3,3, // 3,4,5
+            6,0,6, 0,0,6, 3,3,3, // 6,7,8
+            0,0,6, 0,0,0, 3,3,3, // #4 Triangles
 
-        let pyramid1 = CreateBox('rectangle', {segments: 32, size: 4, height: 0.1}, scene);
-        pyramid1.position = new Vector3(-4.5, -0.9, 6.0);
-        pyramid1.metadata = {
-            mat_color: new Color3(0.10, 0.35, 0.88),
+
+            //Pyramid 2
+            -3,0,-2, 1,0,-2, -1,2,-4, //
+            1,0,-2, 1,0,-6, -1,2,-4, //
+            1,0,-6, -3,0,-6, -1,2,-4, //
+            -3,0,-6, -3,0,-2, -1,2,-4, // 23
+
+
+            //Tower
+            -2,0,1, -1.5,0,1, -1.5,3,1,
+            -1.5,3,1, -2,3,1, -2,0,1,     //Wall 1
+
+
+            -1.5,0,1, -1.5,0,0.5, -1.5,3,0.5,
+            -1.5,3,0.5, -1.5,3,1, -1.5,0,1,  // Wall 2
+
+
+            -2,0,0.5, -1.5,0,0.5, -1.5,3,0.5,
+            -1.5,3,0.5, -2,3,0.5, -2,0,0.5,   // Wall 3
+
+
+            -2,0,1, -2,0,0.5, -2,3,0.5,
+            -2,3,0.5, -2,3,1, -2,0,1,  // Wall 4
+
+
+            //Pyramid on the house
+            -2,3,1, -1.5,3,1, -1.75,3.25,0.75,
+            -1.5,3,0.5, -1.5,3,1, -1.75,3.25,0.75,
+            -1.5,3,0.5, -2,3,0.5, -1.75,3.25,0.75,
+            -2,3,0.5, -2,3,1, -1.75,3.25,0.75,
+        ]
+        let pyramidIndices = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,
+            31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59];
+
+
+
+
+        let pyramidNormals = [];
+       
+        pyramid.metadata = {
+            mat_color: new Color3(0.76, 0.69, 0.502),
             mat_texture: white_texture,
             mat_specular: new Color3(0.8, 0.8, 0.8),
             mat_shininess: 16,
             texture_scale: new Vector2(1.0, 1.0)
-        }
-        pyramid1.material = materials['illum_' + this.shading_alg];
-        current_scene.models.push(pyramid1);
+        };
+
+
+
+
+        // Imported VertexData, found guide online about how to calculate normals automatically
+        VertexData.ComputeNormals(pyramidPositions, pyramidIndices, pyramidNormals);
+        var vertexData = new VertexData();
+        vertexData.positions = pyramidPositions;
+        vertexData.indices = pyramidIndices;
+        vertexData.normals = pyramidNormals;
+        vertexData.applyToMesh(pyramid, true);
+
+
+
+
+        pyramid.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(pyramid);
+
+
+
         
         // Added code, starter taken from a guide on babylon.js key list
         scene.onKeyboardObservable.add((kbInfo) => {
