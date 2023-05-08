@@ -9,7 +9,7 @@ import { RawTexture } from '@babylonjs/core/Materials/Textures/rawTexture';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { Vector2, Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { CreateBox, CreatePolygon, Size } from '@babylonjs/core';
-
+const BASE_URL = import.meta.env.BASE_URL || '/';
 class Renderer {
     constructor(canvas, engine, material_callback, ground_mesh_callback) {
         this.canvas = canvas;
@@ -105,7 +105,7 @@ class Renderer {
 
         // Create ground mesh
         let white_texture = RawTexture.CreateRGBTexture(new Uint8Array([255, 255, 255]), 1, 1, scene);
-        let ground_heightmap = new Texture('/heightmaps/default.png', scene);
+        let ground_heightmap = new Texture(BASE_URL + '/heightmaps/default.png', scene);
         ground_mesh.scaling = new Vector3(20.0, 1.0, 20.0);
         ground_mesh.metadata = {
             mat_color: new Color3(0.10, 0.65, 0.15),
@@ -223,7 +223,7 @@ class Renderer {
 
         // Create ground mesh
         let white_texture = RawTexture.CreateRGBTexture(new Uint8Array([255, 255, 255]), 1, 1, scene);
-        let ground_heightmap = new Texture('/heightmaps/default.png', scene);
+        let ground_heightmap = new Texture(BASE_URL + '/heightmaps/default.png', scene);
         ground_mesh.scaling = new Vector3(20.0, 1.0, 20.0);
         ground_mesh.metadata = {
             mat_color: new Color3(0.10, 0.45, 0.15),
@@ -469,7 +469,7 @@ class Renderer {
 
         // Create ground mesh
         let white_texture = RawTexture.CreateRGBTexture(new Uint8Array([255, 255, 255]), 1, 1, scene);
-        let ground_heightmap = new Texture('/heightmaps/default.png', scene);
+        let ground_heightmap = new Texture(BASE_URL + '/heightmaps/default.png', scene);
         ground_mesh.scaling = new Vector3(20.0, 1.0, 20.0);
         ground_mesh.metadata = {
             mat_color: new Color3(0.76, 0.69, 0.502),
@@ -655,7 +655,7 @@ class Renderer {
 
         // Create ground mesh
         let white_texture = RawTexture.CreateRGBTexture(new Uint8Array([255, 255, 255]), 1, 1, scene);
-        let ground_heightmap = new Texture('/heightmaps/worldheightmap.png', scene);
+        let ground_heightmap = new Texture(BASE_URL + '/heightmaps/worldheightmap.png', scene);
         ground_mesh.scaling = new Vector3(20.0, 1.0, 20.0);
         ground_mesh.metadata = {
             mat_color: new Color3(0.10, 0.65, 0.95),

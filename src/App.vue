@@ -7,7 +7,7 @@ import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import { Vector2 } from '@babylonjs/core/Maths/math.vector';
 
 import { Renderer } from './renderer'
-
+const BASE_URL = import.meta.env.BASE_URL || '/';
 export default {
     data() {
         return {
