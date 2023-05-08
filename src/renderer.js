@@ -669,18 +669,101 @@ class Renderer {
         ground_mesh.material = materials['ground_' + this.shading_alg];
 
         // Create other models
-        let sphere = CreateSphere('sphere', {segments: 32}, scene);
-        sphere.position = new Vector3(1.0, 0.5, 3.0);
-        sphere.metadata = {
-            mat_color: new Color3(0.10, 0.35, 0.88),
+        let pirateShip = new Mesh("custom", scene);
+        let shipPositions = [
+            // Base
+            0,6,0, 3,6,0, 0,5.5,-.5, // 
+            0,5.5,-.5, 3,5.5,-.5, 3,6,0,
+            0,6,-1, 3,6,-1, 0,5.5,-.5, // 
+            0,5.5,-.5, 3,5.5,-.5, 3,6,-1, // 4 Triangles
+
+            //Front
+            0,6,0,  0,5.5,-.5, -.5,6,-.5, //5
+            0,6,-1, 0,5.5,-.5, -.5,6,-.5, //6
+
+            //Back
+            3,6,0, 3,6,-1, 3,5.5,-.5,   // 7 Triangles
+
+            //Front Floor
+            0,6,0, 0,6,-1, -.5,6,-.5, // 8
+
+            //Main Floor
+            0,6,0, 3,6,0, 0,6,-1,
+            0,6,-1, 3,6,-1, 3,6,0, //10
+
+            // Mast
+            1.25,6,-.25, 1.5,6,-.25, 1.5,7,-.25,
+            1.5,7,-.25, 1.25,7,-.25, 1.25,6,-.25,
+
+            1.5,6,-.25, 1.5,6,-.5, 1.5,7,-.5,
+            1.5,7,-.5, 1.5,7,-.25, 1.5,6,-.25,
+
+            1.25,6,-.5, 1.5,6,-.5, 1.5,7,-.5,
+            1.5,7,-.5, 1.25,7,-.5, 1.25,6,-.5,
+
+            1.25,6,-.25, 1.25,6,-.5, 1.25,7,-.5,
+            1.25,7,-.5, 1.25,7,-.25, 1.25,6,-.25,  //18
+
+            //Mast Top
+            1.25,7,-.25, 1.25,7,-.5, 1.5,7,-.5,
+            1.5,7,-.5, 1.5,7,-.25, 1.25,7,-.25,
+
+        ];
+        let shipIndices = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,
+            35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59];
+
+
+        let shipNormals = [];
+       
+        pirateShip.metadata = {
+            mat_color: new Color3(0.58, 0.29, 0.0),
+            mat_texture: white_texture,
+            mat_specular: new Color3(0.0, 0.0, 0.0),
+            mat_shininess: 8,
+            texture_scale: new Vector2(1.0, 1.0)
+        };
+
+
+        // Imported VertexData, found guide online about how to calculate normals automatically
+        VertexData.ComputeNormals(shipPositions, shipIndices, shipNormals);
+        var vertexData = new VertexData();
+        vertexData.positions = shipPositions;
+        vertexData.indices = shipIndices;
+        vertexData.normals = shipNormals;
+        vertexData.applyToMesh(pirateShip, true);
+
+
+        pirateShip.material = materials['illum_' + this.shading_alg];
+        current_scene.models.push(pirateShip);
+        
+
+        let sail = new Mesh("custom", scene);
+        let sailPositions = [
+            1.24,7,-1, 1.24,7,0, 1.24,6.1,0,
+            1.24,6.1,0, 1.24,6.1,-1, 1.24,7,-1
+        ];
+        let sailIndices = [0,1,2,3,4,5];
+
+
+        let sailNormal = [];
+       
+        sail.metadata = {
+            mat_color: new Color3(1.0, 1.0, 1.0),
             mat_texture: white_texture,
             mat_specular: new Color3(0.8, 0.8, 0.8),
-            mat_shininess: 16,
+            mat_shininess: 10,
             texture_scale: new Vector2(1.0, 1.0)
-        }
-        sphere.material = materials['illum_' + this.shading_alg];
-        current_scene.models.push(sphere);
-        
+        };
+
+
+        // Imported VertexData, found guide online about how to calculate normals automatically
+        VertexData.ComputeNormals(sailPositions, sailIndices, sailNormal);
+        var vertexData = new VertexData();
+        vertexData.positions = sailPositions;
+        vertexData.indices = sailIndices;
+        vertexData.normals = sailNormal;
+        vertexData.applyToMesh(sail, true);
+
         // Added code, starter taken from a guide on babylon.js key list
         scene.onKeyboardObservable.add((kbInfo) => {
             switch (kbInfo.event.key) {
