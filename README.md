@@ -1,2 +1,1 @@
-# 3D Rendering - Illumination and Shading
-3D illumination &amp; shading starter code using the Babylon and WebGL APIs
+Project manually calculating lighting with two different methods: Gouraud and Phong shading. Turned out pretty well.
